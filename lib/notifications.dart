@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io' show Platform;
 
@@ -40,6 +41,7 @@ Future<void> _createNotificationChannels() async {
       'Live Bus Activity',
       description: 'Shows live location of bus updating every 7 seconds',
       importance: Importance.max,
+      playSound: false,
     );
 
     await androidImplementation?.createNotificationChannel(liveChannel);
@@ -48,7 +50,7 @@ Future<void> _createNotificationChannels() async {
 
 
 Future<void> showBusNotification(Bus bus, Stop? stop) async {
-  const androidDetails = AndroidNotificationDetails(
+  var androidDetails = const AndroidNotificationDetails(
     'live_bus_activity',
     'Live Bus Activity',
     channelDescription: 'Shows live location of selected bus',
@@ -57,9 +59,12 @@ Future<void> showBusNotification(Bus bus, Stop? stop) async {
     ongoing: true,
     showWhen: false,
     playSound: false,
+    color: Colors.yellowAccent,
+    colorized: true,
+    largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
   );
 
-  const notificationDetails = NotificationDetails(android: androidDetails);
+  var notificationDetails = NotificationDetails(android: androidDetails);
 
   await flutterLocalNotificationsPlugin.show(
     0,

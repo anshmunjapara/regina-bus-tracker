@@ -17,7 +17,7 @@ class BusActivityManager {
   void start() {
     _startTime = DateTime.now();
 
-    _timer = Timer.periodic(const Duration(seconds: 7), (timer) async {
+    _timer = Timer.periodic(const Duration(seconds: 10), (timer) async {
       // ✅ Auto-stop after 15 minutes
       if (_startTime != null &&
           DateTime.now().difference(_startTime!).inMinutes >= 2) {
