@@ -7,7 +7,7 @@ import '../models/bus.dart';
 class ApiService {
   static const String baseUrl = "https://transitlive.com/json";
 
-  Future<List<Bus>> fetchBuses() async {
+  static Future<List<Bus>> fetchBuses() async {
     final response = await http.get(Uri.parse('$baseUrl/buses.js'));
 
     if (response.statusCode == 200) {
@@ -18,7 +18,16 @@ class ApiService {
     }
   }
 
-  Future<List<Stop>> fetchStops() async {
+  static  Future<Bus?> fetchBusById(Bus currBus) async{
+    final buses = await fetchBuses();
+    try {
+      return buses.firstWhere((bus) => bus.busId == currBus.busId);
+    } catch (e) {
+      return null; // no bus found
+    }
+  }
+
+  static Future<List<Stop>> fetchStops() async {
     final response = await http.get(Uri.parse('$baseUrl/stops.js'));
 
     if (response.statusCode == 200) {

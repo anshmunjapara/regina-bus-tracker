@@ -1,8 +1,8 @@
 import 'package:bus_tracker/services/api_service.dart';
+import 'package:bus_tracker/utils/bus_activity_manager.dart';
 import 'package:bus_tracker/widgets/BusDropdown.dart';
 import 'package:flutter/material.dart';
 
-import 'handle_notification.dart';
 import 'models/bus.dart';
 import 'models/stop.dart';
 import 'notifications.dart';
@@ -38,29 +38,40 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
+
   List<Bus> _buses = [];
   List<Stop> _stops = [];
   Bus? _selectedBus;
   bool _isLoading = true;
-  ApiService myApi = ApiService();
+
+  BusActivityManager? _manager;
 
   @override
   void initState() {
     super.initState();
     _loadStops();
     _loadBuses();
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _manager?.stop(); // stop when widget is disposed
+    super.dispose();
   }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      _manager?.stop(); // stop when app closes or backgrounded
+    }
+  }
+
   Future<void> _loadStops() async {
     try {
-      final stops = await myApi.fetchStops();
+      final stops = await ApiService.fetchStops();
       setState(() {
         _stops = stops;
         _isLoading = false;
@@ -72,9 +83,10 @@ class _MyHomePageState extends State<MyHomePage> {
       print("Error loading stops: $e");
     }
   }
+
   Future<void> _loadBuses() async {
     try {
-      final buses = await myApi.fetchBuses();
+      final buses = await ApiService.fetchBuses();
       setState(() {
         _buses = buses;
         _isLoading = false;
@@ -100,49 +112,53 @@ class _MyHomePageState extends State<MyHomePage> {
             : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Text(
-                    'You have pushed the button this many times:',
-                  ),
-                  Text(
-                    '$_counter',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
                   ElevatedButton(
                     onPressed: () {
-                      startLiveActivity();
+                      if (_selectedBus != null) {
+                        // stop any previous tracking
+                        _manager?.stop();
+
+                        // start tracking for the selected bus
+                        _manager = BusActivityManager(
+                          selectedBus: _selectedBus!,
+                          allStops: _stops,
+                        );
+                        _manager!.start();
+
+                        print(
+                            "Live activity started for bus ${_selectedBus!.route}");
+                      } else {
+                        print("No bus selected");
+                        showErrorNotification("Please select a bus first");
+                      }
                     },
                     child: const Text("Start Live Activity"),
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      stopLiveActivity();
+                      _manager?.stop();
+                      print("Live activity stopped");
                     },
                     child: const Text("Stop Live Activity"),
                   ),
-                  const ElevatedButton(
-                    onPressed: showTestNotification,
-                    child: Text("Show Test Notification"),
-                  ),
-                  BusDropdown(
-                    buses: _buses,
-                    selectedBus: _selectedBus,
-                    onChanged: (bus) {
-                      setState(() {
-                        _selectedBus = bus;
-                      });
-                      print("Selected bus: ${bus?.route} - ${bus?.line}");
-                    },
+                  Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: BusDropdown(
+                      buses: _buses,
+                      selectedBus: _selectedBus,
+                      onChanged: (bus) {
+                        setState(() {
+                          _selectedBus = bus;
+                        });
+                        print("Selected bus: ${bus?.route} - ${bus?.line}");
+                      },
+                    ),
                   ),
                   const SizedBox(height: 20),
                   if (_selectedBus != null)
                     Text("You selected Bus ${_selectedBus!.route}"),
                 ],
               ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
