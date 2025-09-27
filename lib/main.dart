@@ -1,3 +1,4 @@
+import 'package:bus_tracker/screens/map_screen.dart';
 import 'package:bus_tracker/services/api_service.dart';
 import 'package:bus_tracker/utils/bus_activity_manager.dart';
 import 'package:bus_tracker/widgets/BusDropdown.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MapScreen(),
     );
   }
 }

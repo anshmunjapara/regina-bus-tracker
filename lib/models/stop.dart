@@ -2,6 +2,7 @@ class Stop {
   final String stopId;
   final String name;
   final List<int> routes;
+  final String dir;
   final double latitude;
   final double longitude;
 
@@ -9,6 +10,7 @@ class Stop {
     required this.stopId,
     required this.name,
     required this.routes,
+    required this.dir,
     required this.latitude,
     required this.longitude,
   });
@@ -22,6 +24,7 @@ class Stop {
       stopId: properties['id'] as String,
       name: properties['name'] as String,
       routes: (properties['r'] as List<dynamic>).map((e) => e as int).toList(),
+      dir: properties['dir'],
       longitude: double.parse(coords[0].toString()), // JSON stores as string
       latitude: double.parse(coords[1].toString()),
     );
