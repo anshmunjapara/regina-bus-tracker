@@ -1,3 +1,5 @@
+import 'package:bus_tracker/providers/bus_provider.dart';
+import 'package:bus_tracker/providers/map_provider.dart';
 import 'package:bus_tracker/repositories/bus_repository.dart';
 import 'package:bus_tracker/repositories/stop_repository.dart';
 import 'package:bus_tracker/screens/map_screen.dart';
@@ -5,6 +7,7 @@ import 'package:bus_tracker/services/api_service.dart';
 import 'package:bus_tracker/utils/bus_activity_manager.dart';
 import 'package:bus_tracker/widgets/BusDropdown.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'models/bus.dart';
 import 'models/stop.dart';
@@ -13,7 +16,15 @@ import 'notifications.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initNotifications();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => MapProvider()),
+        ChangeNotifierProvider(create: (context) => BusProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -22,12 +33,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MapScreen(),
+      title: 'Bus Tracker',
+      home: MapScreen(),
     );
   }
 }
@@ -41,7 +48,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   final BusRepository _busRepository = BusRepository();
   final StopRepository _stopRepository = StopRepository();
   List<Bus> _buses = [];
