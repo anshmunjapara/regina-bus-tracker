@@ -26,8 +26,6 @@ class RouteInfo {
   }
 }
 
-List<RouteInfo> parseRoutes(Map<String, dynamic> json) {
-  return json.entries.map((entry) {
-    return RouteInfo.fromJson(entry.key, entry.value);
-  }).toList();
+Map<String, RouteInfo> parseRoutes(Map<String, dynamic> json) {
+  return json.map((key, value) => MapEntry(key, RouteInfo.fromJson(key, value)));
 }
