@@ -7,34 +7,23 @@ import '../models/bus.dart';
 class ApiService {
   static const String baseUrl = "https://transitlive.com/json";
 
-  static Future<List<Bus>> fetchBuses() async {
+  Future<String> fetchBusesJson() async {
     final response = await http.get(Uri.parse('$baseUrl/buses.js'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body);
-      return parseBusList(jsonList);
+      return response.body;
     } else {
-      throw Exception("Failed to load buses");
+      throw Exception("Failed to load buses from API");
     }
   }
 
-  static  Future<Bus?> fetchBusById(Bus currBus) async{
-    final buses = await fetchBuses();
-    try {
-      return buses.firstWhere((bus) => bus.busId == currBus.busId);
-    } catch (e) {
-      return null; // no bus found
-    }
-  }
-
-  static Future<List<Stop>> fetchStops() async {
+  Future<String> fetchStopsJson() async {
     final response = await http.get(Uri.parse('$baseUrl/stops.js'));
 
     if (response.statusCode == 200) {
-      final List<dynamic> jsonList = json.decode(response.body);
-      return parseStops(jsonList);
+      return response.body;
     } else {
-      throw Exception("Failed to load stops");
+      throw Exception("Failed to load stops from API");
     }
   }
 }

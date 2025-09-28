@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:bus_tracker/repositories/bus_repository.dart';
+import 'package:bus_tracker/repositories/stop_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -19,7 +21,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   final MapController _mapController = MapController();
-
+  final BusRepository _busRepository = BusRepository();
+  final StopRepository _stopRepository = StopRepository();
   Timer? _debounce;
   List<Bus> _buses = [];
   List<Stop> _stops = [];
@@ -54,7 +57,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   Future<void> _loadStops() async {
     try {
-      final stops = await ApiService.fetchStops();
+      final stops = await _stopRepository.getAllStops();
       setState(() {
         _stops = stops;
         _isLoading = false;
@@ -69,7 +72,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   Future<void> _loadBuses() async {
     try {
-      final buses = await ApiService.fetchBuses();
+      final buses = await _busRepository.getAllBuses();
       setState(() {
         _buses = buses;
         _isLoading = false;

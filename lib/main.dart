@@ -1,3 +1,5 @@
+import 'package:bus_tracker/repositories/bus_repository.dart';
+import 'package:bus_tracker/repositories/stop_repository.dart';
 import 'package:bus_tracker/screens/map_screen.dart';
 import 'package:bus_tracker/services/api_service.dart';
 import 'package:bus_tracker/utils/bus_activity_manager.dart';
@@ -40,7 +42,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
-
+  final BusRepository _busRepository = BusRepository();
+  final StopRepository _stopRepository = StopRepository();
   List<Bus> _buses = [];
   List<Stop> _stops = [];
   Bus? _selectedBus;
@@ -72,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
 
   Future<void> _loadStops() async {
     try {
-      final stops = await ApiService.fetchStops();
+      final stops = await _stopRepository.getAllStops();
       setState(() {
         _stops = stops;
         _isLoading = false;
@@ -87,7 +90,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
 
   Future<void> _loadBuses() async {
     try {
-      final buses = await ApiService.fetchBuses();
+      final buses = await _busRepository.getAllBuses();
       setState(() {
         _buses = buses;
         _isLoading = false;

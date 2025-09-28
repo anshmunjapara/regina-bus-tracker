@@ -4,9 +4,11 @@ import 'package:bus_tracker/services/api_service.dart';
 import '../models/bus.dart';
 import '../models/stop.dart';
 import '../notifications.dart';
+import '../repositories/bus_repository.dart';
 import '../utils/distance_calculator.dart';
 
 class BusActivityManager {
+  final BusRepository _busRepository = BusRepository();
   Timer? _timer;
   final Bus selectedBus;
   final List<Stop> allStops;
@@ -18,7 +20,7 @@ class BusActivityManager {
     _startTime = DateTime.now();
 
     _timer = Timer.periodic(const Duration(seconds: 10), (timer) async {
-      // ✅ Auto-stop after 15 minutes
+      //Auto-stop after 15 minutes
       if (_startTime != null &&
           DateTime.now().difference(_startTime!).inMinutes >= 2) {
         stop();
@@ -26,7 +28,7 @@ class BusActivityManager {
         return;
       }
 
-      final bus = await ApiService.fetchBusById(selectedBus);
+      final bus = await _busRepository.getBusByID(selectedBus);
 
       if (bus != null) {
         final stop = DistanceCalculator.findClosestStop(bus, allStops);
