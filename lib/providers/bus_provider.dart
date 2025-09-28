@@ -12,14 +12,33 @@ class BusProvider with ChangeNotifier {
 
   Timer? _busUpdateTimer;
   List<Bus> _buses = [];
+
   List<Bus> get buses => _buses;
 
   Map<String, RouteInfo> _routes = {};
+
   Map<String, RouteInfo> get routes => _routes;
 
+  bool _isLoading = true;
+
+  bool get isLoading => _isLoading;
+
   BusProvider() {
-    fetchRoutes();
-    fetchBuses();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    // Fetch initial data
+    await Future.delayed(const Duration(seconds: 1));
+    await Future.wait([
+      fetchRoutes(),
+      fetchBuses(),
+    ]);
+
+    _isLoading = false;
+    notifyListeners();
+
+    // Start the timer for periodic updates
     _busUpdateTimer =
         Timer.periodic(const Duration(seconds: 7), (_) => fetchBuses());
   }
