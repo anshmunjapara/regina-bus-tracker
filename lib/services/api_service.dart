@@ -1,8 +1,5 @@
-import 'dart:convert';
-import 'package:bus_tracker/models/stop.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/bus.dart';
 
 class ApiService {
   static const String baseUrl = "https://transitlive.com/json";

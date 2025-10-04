@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:bus_tracker/services/api_service.dart';
 
 import '../models/bus.dart';
 import '../models/stop.dart';

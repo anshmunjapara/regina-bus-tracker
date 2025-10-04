@@ -5,6 +5,7 @@ import 'package:bus_tracker/utils/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import '../models/bus.dart';
@@ -29,43 +30,106 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   void _handleBusTap(Bus bus) {
-    showDialog(
+    showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Track Bus ${bus.route}'),
-            content: const Text(
-                'Receive notifications for this bus? This will stop after 20 minutes.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                child: const Text('Track'),
-                onPressed: () {
-                  _activityManager?.stop();
-                  _activityManager = null;
+          return Container(
+            margin: const EdgeInsets.all(20.0),
+            height: 300.0,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Track Bus ${bus.route}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 2),
+                          child: Text(
+                            bus.line,
 
-                  final busProvider =
-                      Provider.of<BusProvider>(context, listen: false);
+                            style: const TextStyle(
+                              color: Colors.black54,
+                              height: 0.9,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+                Center(child: Lottie.asset('assets/data/bus_animation.json', width: 120)),
+                const Text(
+                    'Receive arrival notifications?\n'
+                        'Estimated stop time: 20 minutes.'),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          side: const BorderSide(
+                            color: Colors.blue,
+                            width: 1.5,
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                        ),
+                        child: const Text('Track',
+                            style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          _activityManager?.stop();
+                          _activityManager = null;
 
-                  final allStops =
-                      Provider.of<MapProvider>(context, listen: false).allStops;
+                          final busProvider =
+                              Provider.of<BusProvider>(context, listen: false);
 
-                  // Create and start the manager
-                  _activityManager = BusActivityManager(
-                    selectedBus: bus,
-                    allStops: allStops,
-                    busProvider: busProvider,
-                  );
-                  _activityManager!.start();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+                          final allStops =
+                              Provider.of<MapProvider>(context, listen: false)
+                                  .allStops;
+
+                          // Create and start the manager
+                          _activityManager = BusActivityManager(
+                            selectedBus: bus,
+                            allStops: allStops,
+                            busProvider: busProvider,
+                          );
+                          _activityManager!.start();
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
         });
   }
