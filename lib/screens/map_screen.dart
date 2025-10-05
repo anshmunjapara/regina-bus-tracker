@@ -1,5 +1,6 @@
 import 'package:bus_tracker/providers/bus_provider.dart';
 import 'package:bus_tracker/providers/map_provider.dart';
+import 'package:bus_tracker/widgets/route_filter_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
@@ -93,9 +94,14 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           return _buildLoadingIndicator();
         }
 
-        return MapWidget(
-          onBusTap: _handleBusTap,
-          mapController: _mapController,
+        return Stack(
+          children: [
+            MapWidget(
+              onBusTap: _handleBusTap,
+              mapController: _mapController,
+            ),
+            const RouteFilterButton()
+          ],
         );
       },
     );

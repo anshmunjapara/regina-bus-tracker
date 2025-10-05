@@ -63,7 +63,6 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> fetchBuses() async {
     _buses = await _busRepository.getAllBuses();
-    // print("✅ Buses fetched");
     notifyListeners();
   }
 
