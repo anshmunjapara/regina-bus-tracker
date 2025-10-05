@@ -7,6 +7,8 @@ import '../models/bus.dart';
 
 Marker buildBusMarker(Bus bus, Color color, VoidCallback onTap) {
   const double markerSize = 20.0;
+  final double angle = (bus.dir - 90) * (math.pi / 180.0);
+  final bool shouldFlip = angle > math.pi / 2;
   return Marker(
     height: markerSize,
     width: markerSize + 5.0,
@@ -15,47 +17,50 @@ Marker buildBusMarker(Bus bus, Color color, VoidCallback onTap) {
     point: LatLng(bus.latitude, bus.longitude),
     child: GestureDetector(
       onTap: onTap,
-      child: Transform.rotate(
-        angle: (bus.dir - 90) * (math.pi / 180.0),
-        alignment: Alignment.center,
-        child: Container(
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(7.0),
-          ),
-          child: const Icon(
-            Icons.airport_shuttle,
-            color: Colors.black,
-            size: markerSize,
-            shadows: [
-              Shadow(
-                color: Colors.white54, // Outline color
-                offset: Offset(0, 0),
-                blurRadius: 1.0,
-              ),
-              // Add multiple shadows for thicker outline
-              Shadow(
-                color: Colors.white54,
-                offset: Offset(1, 0),
-                blurRadius: 1.0,
-              ),
-              Shadow(
-                color: Colors.white54,
-                offset: Offset(-1, 0),
-                blurRadius: 1.0,
-              ),
-              Shadow(
-                color: Colors.white54,
-                offset: Offset(0, 1),
-                blurRadius: 1.0,
-              ),
-              Shadow(
-                color: Colors.white54,
-                offset: Offset(0, -1),
-                blurRadius: 1.0,
-              ),
-            ],
+      child: Transform.flip(
+        flipY: shouldFlip,
+        child: Transform.rotate(
+          angle: angle,
+          alignment: Alignment.center,
+          child: Container(
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(7.0),
+            ),
+            child: const Icon(
+              Icons.airport_shuttle,
+              color: Colors.black,
+              size: markerSize,
+              shadows: [
+                Shadow(
+                  color: Colors.white54, // Outline color
+                  offset: Offset(0, 0),
+                  blurRadius: 1.0,
+                ),
+                // Add multiple shadows for thicker outline
+                Shadow(
+                  color: Colors.white54,
+                  offset: Offset(1, 0),
+                  blurRadius: 1.0,
+                ),
+                Shadow(
+                  color: Colors.white54,
+                  offset: Offset(-1, 0),
+                  blurRadius: 1.0,
+                ),
+                Shadow(
+                  color: Colors.white54,
+                  offset: Offset(0, 1),
+                  blurRadius: 1.0,
+                ),
+                Shadow(
+                  color: Colors.white54,
+                  offset: Offset(0, -1),
+                  blurRadius: 1.0,
+                ),
+              ],
+            ),
           ),
         ),
       ),
