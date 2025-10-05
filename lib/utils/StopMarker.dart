@@ -28,7 +28,8 @@ Marker buildStopMarker(Stop stop) {
       break;
   }
   return Marker(
-
+    height: 22,
+    width: 22,
     point: LatLng(stop.latitude, stop.longitude),
     child: Transform.translate(
       offset: Offset(offsetX, offsetY),
@@ -36,11 +37,15 @@ Marker buildStopMarker(Stop stop) {
         angle: rotation,
         child: Container(
           padding: const EdgeInsets.all(0),
-          color: Colors.black87,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.blueAccent,
+            border: Border.all(color: Colors.black, width: 1.5)
+          ),
           child: const Icon(
             Icons.arrow_upward,
-            color: Colors.blue,
-            size: 16,
+            color: Colors.white,
+            size: 18,
           ),
         ),
       ),
