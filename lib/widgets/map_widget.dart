@@ -7,6 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 import '../providers/bus_provider.dart';
 import '../providers/map_provider.dart';
+import '../providers/route_filter_provider.dart';
 import '../utils/StopMarker.dart';
 import '../utils/bus_marker.dart';
 
@@ -79,11 +80,19 @@ class MapWidget extends StatelessWidget {
   }
 
   Widget _buildBusMarkers() {
-    return Consumer<BusProvider>(
-      builder: (context, provider, child) {
+    return Consumer2<BusProvider, RouteFilterProvider>(
+      builder: (context, busProvider, routeFilterProvider, child) {
+        final selectedRoutes = routeFilterProvider.selectedRoutes;
+
+        final filteredBuses = selectedRoutes.isEmpty
+            ? busProvider.buses
+            : busProvider.buses
+                .where((bus) => selectedRoutes.contains(bus.route.toString()))
+                .toList();
+
         return MarkerLayer(
-          markers: provider.buses.map((bus) {
-            final route = provider.routes[bus.route.toString()];
+          markers: filteredBuses.map((bus) {
+            final route = busProvider.routes[bus.route.toString()];
             final color = route != null ? route.color.toColor() : Colors.grey;
             return buildBusMarker(bus, color, () => onBusTap(bus));
           }).toList(),
