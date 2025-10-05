@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 
-
 class ApiService {
   static const String baseUrl = "https://transitlive.com/json";
 
@@ -30,6 +29,16 @@ class ApiService {
       return response.body;
     } else {
       throw Exception("Failed to load routes from API");
+    }
+  }
+
+  Future<String> fetchRoutePolylinesJson(String routeId) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/polyLines/route$routeId.js'));
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception("Failed to load route polyline from API");
     }
   }
 }

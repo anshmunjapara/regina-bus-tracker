@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../models/bus.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
+import '../models/route.dart';
 import '../providers/bus_provider.dart';
 import '../providers/map_provider.dart';
 import '../providers/route_filter_provider.dart';
@@ -30,6 +31,7 @@ class MapWidget extends StatelessWidget {
           options: _buildMapOptions(mapProvider),
           children: [
             _buildTileLayer(),
+            _buildPolylineLayer(),
             _buildStopMarkers(),
             _buildBusMarkers(),
           ],
@@ -99,5 +101,26 @@ class MapWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _buildPolylineLayer() {
+    return Consumer<RouteFilterProvider>(builder: (context, provider, child) {
+      final polylinesToDraw = <Polyline>[];
+      final Map<String, RouteInfo> routes = context.read<BusProvider>().routes;
+
+      final routesToDraw = routes.values.where(
+          (route) => provider.selectedRoutes.contains(route.routeNumber));
+
+      for (final route in routesToDraw) {
+        if (route.points.isNotEmpty) {
+          polylinesToDraw.add(Polyline(
+            points: route.points,
+            strokeWidth: 4,
+            color: route.color.toColor(),
+          ));
+        }
+      }
+      return PolylineLayer(polylines: polylinesToDraw);
+    });
   }
 }
