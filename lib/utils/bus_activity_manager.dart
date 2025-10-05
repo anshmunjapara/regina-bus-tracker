@@ -42,10 +42,14 @@ class BusActivityManager {
   void start() {
     _startTime = DateTime.now();
     busProvider.addListener(_onBusDataUpdated);
+    busProvider
+        .startTracking(); //to tell provider that user is tracking for the background updates
     _onBusDataUpdated();
   }
 
   void stop() {
     busProvider.removeListener(_onBusDataUpdated);
+    busProvider
+        .stopTracking(); // to tell provider that user is not tracking for the background updates
   }
 }
