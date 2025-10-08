@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:bus_tracker/services/api_service.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../config/service_locator.dart';
 import '../models/route.dart';
 
 class RouteRepository {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService = getIt<ApiService>();
 
   Future<Map<String, RouteInfo>> getAllRoutes() async {
     final jsonString = await _apiService.fetchRoutesJson();

@@ -5,11 +5,14 @@ import 'package:bus_tracker/screens/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'config/service_locator.dart';
 import 'notifications.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initNotifications();
+  setupLocator();
+  await getIt.allReady();
   runApp(
     MultiProvider(
       providers: [

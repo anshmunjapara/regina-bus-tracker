@@ -2,11 +2,18 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   static const String baseUrl = "https://transitlive.com/json";
+  final http.Client _client;
+
+  ApiService({required http.Client client}) : _client = client;
 
   Future<String> fetchBusesJson() async {
-    final response = await http.get(Uri.parse('$baseUrl/buses.js'));
+    // final stopwatch = Stopwatch();
+    // stopwatch.start();
+    final response = await _client.get(Uri.parse('$baseUrl/buses.js'));
 
     if (response.statusCode == 200) {
+      // stopwatch.stop();
+      // print('✅API for bus call took ${stopwatch.elapsedMilliseconds}');
       return response.body;
     } else {
       throw Exception("Failed to load buses from API");
@@ -14,7 +21,7 @@ class ApiService {
   }
 
   Future<String> fetchStopsJson() async {
-    final response = await http.get(Uri.parse('$baseUrl/stops.js'));
+    final response = await _client.get(Uri.parse('$baseUrl/stops.js'));
 
     if (response.statusCode == 200) {
       return response.body;
@@ -24,7 +31,8 @@ class ApiService {
   }
 
   Future<String> fetchRoutesJson() async {
-    final response = await http.get(Uri.parse('$baseUrl/routes.js'));
+    final response = await _client.get(Uri.parse('$baseUrl/routes.js'));
+
     if (response.statusCode == 200) {
       return response.body;
     } else {
@@ -34,7 +42,8 @@ class ApiService {
 
   Future<String> fetchRoutePolylinesJson(String routeId) async {
     final response =
-        await http.get(Uri.parse('$baseUrl/polyLines/route$routeId.js'));
+        await _client.get(Uri.parse('$baseUrl/polyLines/route$routeId.js'));
+
     if (response.statusCode == 200) {
       return response.body;
     } else {

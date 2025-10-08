@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:bus_tracker/config/service_locator.dart';
 import 'package:bus_tracker/models/bus.dart';
 import 'package:bus_tracker/services/api_service.dart';
 
 class BusRepository {
-  final ApiService _apiService = ApiService();
+  final ApiService _apiService = getIt<ApiService>();
 
   Future<List<Bus>> getAllBuses() async {
     final jsonString = await _apiService.fetchBusesJson();
