@@ -5,7 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 
 import '../models/stop.dart';
 
-Marker buildStopMarker(Stop stop) {
+Marker buildStopMarker(Stop stop, VoidCallback onTap) {
   double rotation = 0.0;
   double offsetX = 0;
   double offsetY = 0;
@@ -35,17 +35,19 @@ Marker buildStopMarker(Stop stop) {
       offset: Offset(offsetX, offsetY),
       child: Transform.rotate(
         angle: rotation,
-        child: Container(
-          padding: const EdgeInsets.all(0),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blueAccent,
-            border: Border.all(color: Colors.black, width: 1.5)
-          ),
-          child: const Icon(
-            Icons.arrow_upward,
-            color: Colors.white,
-            size: 18,
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(0),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.blueAccent,
+                border: Border.all(color: Colors.black, width: 1.5)),
+            child: const Icon(
+              Icons.arrow_upward,
+              color: Colors.white,
+              size: 18,
+            ),
           ),
         ),
       ),

@@ -6,6 +6,7 @@ import '../models/bus.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 import '../models/route.dart';
+import '../models/stop.dart';
 import '../providers/bus_provider.dart';
 import '../providers/map_provider.dart';
 import '../providers/route_filter_provider.dart';
@@ -14,12 +15,14 @@ import '../utils/bus_marker.dart';
 
 class MapWidget extends StatelessWidget {
   final Function(Bus) onBusTap;
+  final Function(Stop) onStopTap;
   final MapController? mapController;
 
   const MapWidget({
     super.key,
     required this.onBusTap,
     required this.mapController,
+    required this.onStopTap,
   });
 
   @override
@@ -74,7 +77,7 @@ class MapWidget extends StatelessWidget {
       builder: (context, provider, child) {
         return MarkerLayer(
           markers: provider.visibleStops
-              .map((stop) => buildStopMarker(stop))
+              .map((stop) => buildStopMarker(stop, () => onStopTap(stop)))
               .toList(),
         );
       },
