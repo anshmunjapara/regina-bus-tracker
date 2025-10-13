@@ -1,7 +1,12 @@
 import 'package:bus_tracker/models/bus_timings.dart';
+import 'package:bus_tracker/providers/bus_provider.dart';
+import 'package:bus_tracker/utils/string_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../models/route.dart';
 import '../models/stop.dart';
+import '../providers/route_filter_provider.dart';
 
 class StopDetailsBottomSheet extends StatelessWidget {
   final Stop stop;
@@ -15,6 +20,8 @@ class StopDetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final routes = context.read<BusProvider>().routes;
+
     return Container(
       margin: const EdgeInsets.all(20.0),
       height: 300.0,
@@ -28,32 +35,64 @@ class StopDetailsBottomSheet extends StatelessWidget {
               fontSize: 20,
             ),
           ),
-          Text(
-            'Routes: ${stop.routes}',
-            style: const TextStyle(
-              color: Colors.black54,
-              height: 0.9,
-            ),
-          ),
+          const SizedBox(height: 10),
+          _buildRouteButtons(context, routes),
           const SizedBox(height: 20),
           busTimings.isEmpty
               ? const Expanded(child: Text('No bus timings available'))
-              : _buildBusTimings(),
+              : _buildBusTimings(routes),
         ],
       ),
     );
   }
 
-  Widget _buildBusTimings() {
+  Widget _buildRouteButtons(
+      BuildContext context, Map<String, RouteInfo> routes) {
+    return Wrap(
+      spacing: 6, // horizontal space between tags
+      runSpacing: 6, // vertical space when wrapping
+      children: stop.routes.map<Widget>((route) {
+        final selectedRoutes =
+            context.watch<RouteFilterProvider>().selectedRoutes;
+        final isSelected = selectedRoutes.contains(route.toString());
+        final color = routes[route.toString()]?.color.toColor();
+        return GestureDetector(
+          onTap: () {
+            context.read<RouteFilterProvider>().toggleRoute(route.toString());
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: isSelected ? color : Colors.grey,
+              // border: Border.all(color: Colors.blueAccent, width: 1),
+              borderRadius:
+                  BorderRadius.circular(6), // for square look, use 4–6 radius
+            ),
+            child: Text(
+              route.toString(),
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildBusTimings(Map<String, RouteInfo> routes) {
     return Expanded(
       child: ListView.builder(
         itemCount: busTimings.length,
         itemBuilder: (context, index) {
           final timing = busTimings[index];
+          final color = routes[timing.route.toString()]?.color.toColor();
           return Card(
             child: ListTile(
-              leading: const Icon(Icons.directions_bus),
-              title: Text('Route ${timing.route} to ${timing.routeName}'),
+              leading: Icon(Icons.directions_bus, color: color),
+              title: Text('Bus ${timing.route} to ${timing.routeName}'),
               subtitle: Text('Arriving at ${timing.eta}'),
             ),
           );

@@ -51,9 +51,16 @@ class ApiService {
     }
   }
 
-  Future<String> fetchBusTimingsJson(String stopId) async {
+  Future<String> fetchBusTimingsJson(
+      String stopId, Set<String> selectedRoutes) async {
+    String filter;
+    if (selectedRoutes.isEmpty) {
+      filter = '&routes=all';
+    } else {
+      filter = '&routes=${selectedRoutes.join(',')}';
+    }
     final response = await _client.get(Uri.parse(
-        'https://transitlive.com/ajax/livemap.php?action=stop_times&stop=$stopId&routes=all&lim=8&skip=0&ws=0'));
+        'https://transitlive.com/ajax/livemap.php?action=stop_times&stop=$stopId$filter&lim=8&skip=0&ws=0'));
 
     if (response.statusCode == 200) {
       return response.body;

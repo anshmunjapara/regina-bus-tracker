@@ -9,6 +9,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 
 import '../models/bus.dart';
+import '../providers/route_filter_provider.dart';
 import '../repositories/bus_timing_repository.dart';
 import '../services/bus_tracking_service.dart';
 import '../widgets/bus_details_bottom_sheet.dart';
@@ -50,7 +51,10 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _handleStopTap(Stop stop) async {
-    List<BusTiming> busTimings = await getBusTimings(stop.stopId);
+    final routeFilterProvider = context.read<RouteFilterProvider>();
+    final List<BusTiming> busTimings =
+        await getBusTimings(stop.stopId, routeFilterProvider.selectedRoutes);
+    print('===> ${routeFilterProvider.selectedRoutes}');
     _showStopDetails(stop, busTimings);
   }
 
