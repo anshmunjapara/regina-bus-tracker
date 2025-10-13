@@ -115,6 +115,21 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         if (_isLoading(mapProvider, busProvider)) {
           return _buildLoadingIndicator();
         }
+        if (!busProvider.isProcessingComplete) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            busProvider.processAllRoutes(mapProvider.allStops);
+          });
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16),
+                Text('Processing route data...'),
+              ],
+            ),
+          );
+        }
 
         return Stack(
           children: [

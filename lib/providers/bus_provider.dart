@@ -5,6 +5,11 @@ import 'package:bus_tracker/models/route.dart';
 import 'package:bus_tracker/repositories/bus_repository.dart';
 import 'package:bus_tracker/repositories/route_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:turf/along.dart';
+
+import '../models/processed_route_stop.dart';
+import '../models/stop.dart';
+import '../utils/route_processing.dart';
 
 class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
   final BusRepository _busRepository = BusRepository();
@@ -25,6 +30,9 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
   bool _isLoading = true;
 
   bool get isLoading => _isLoading;
+  bool isProcessingComplete = false;
+
+  Map<String, List<ProcessedRouteStop>> processedRoutes = {};
 
   BusProvider() {
     WidgetsBinding.instance.addObserver(this);
@@ -68,6 +76,27 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> fetchRoutes() async {
     _routes = await _routeRepository.getAllRoutes();
+  }
+
+  Future<void> processAllRoutes(List<Stop> allStops) async {
+    if (isProcessingComplete) return;
+
+    for (var route in _routes.values) {
+      final routePolyline = LineString(
+        coordinates:
+            route.points.map((p) => Position(p.longitude, p.latitude)).toList(),
+      );
+
+      final processedStops = await preprocessRouteStops(
+        routeId: route.routeNumber,
+        allStopsInCity: allStops,
+        routePolyline: routePolyline,
+      );
+      processedRoutes[route.routeNumber] = processedStops;
+    }
+
+    isProcessingComplete = true;
+    notifyListeners();
   }
 
   void _updateTimerBasedOnState() {

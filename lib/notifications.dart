@@ -6,14 +6,14 @@ import 'models/bus.dart';
 import 'models/stop.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 Future<void> initNotifications() async {
   const AndroidInitializationSettings initializationSettingsAndroid =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
+      AndroidInitializationSettings('@mipmap/ic_launcher');
 
   const InitializationSettings initializationSettings =
-  InitializationSettings(android: initializationSettingsAndroid);
+      InitializationSettings(android: initializationSettingsAndroid);
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
@@ -48,7 +48,6 @@ Future<void> _createNotificationChannels() async {
   }
 }
 
-
 Future<void> showBusNotification(Bus bus, Stop? stop) async {
   var androidDetails = const AndroidNotificationDetails(
     'live_bus_activity',
@@ -61,7 +60,7 @@ Future<void> showBusNotification(Bus bus, Stop? stop) async {
     playSound: false,
     color: Colors.yellowAccent,
     colorized: true,
-    largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+    // largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
   );
 
   var notificationDetails = NotificationDetails(android: androidDetails);
@@ -69,9 +68,7 @@ Future<void> showBusNotification(Bus bus, Stop? stop) async {
   await flutterLocalNotificationsPlugin.show(
     0,
     'Bus ${bus.route} - ${bus.line}',
-    stop != null
-        ? 'Near: ${stop.name}'
-        : 'No nearby stop found',
+    stop != null ? 'Next Stop: ${stop.name}' : 'No nearby stop found',
     notificationDetails,
   );
 }

@@ -10,6 +10,7 @@ import '../models/stop.dart';
 class MapProvider with ChangeNotifier {
   final StopRepository _stopRepository = StopRepository();
   List<Stop> _allStops = [];
+
   List<Stop> get allStops => _allStops;
 
   List<Stop> _visibleStops = [];
@@ -23,7 +24,6 @@ class MapProvider with ChangeNotifier {
   Timer? _debounce;
 
   MapProvider() {
-
     fetchAllStops();
   }
 
@@ -39,6 +39,7 @@ class MapProvider with ChangeNotifier {
     notifyListeners();
     await Future.delayed(const Duration(seconds: 1));
     _allStops = await _stopRepository.getAllStops();
+
     _isLoading = false;
     notifyListeners();
   }

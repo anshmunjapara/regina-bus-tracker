@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:turf/along.dart';
+import 'package:turf/nearest_point_on_line.dart';
+
 import '../models/bus.dart';
+import '../models/processed_route_stop.dart';
 import '../models/stop.dart';
 import '../notifications.dart';
 import '../providers/bus_provider.dart';
 import '../repositories/bus_repository.dart';
-import '../utils/distance_calculator.dart';
 
 class BusActivityManager {
   final Bus selectedBus;
@@ -30,13 +33,52 @@ class BusActivityManager {
     final bus = await _busRepository.getBusByID(selectedBus);
 
     if (bus != null) {
-      final stop = DistanceCalculator.findClosestStop(bus, allStops);
+      // final stop = DistanceCalculator.findClosestStop(bus, allStops);
+      //
+      // await showBusNotification(bus, stop);
 
-      await showBusNotification(bus, stop);
+      final nextProcessedStop = _findNextBusStop(bus);
+      if (nextProcessedStop != null) {
+        await showBusNotification(bus, nextProcessedStop.originalStop);
+      } else {
+        // Optional: handle case where next stop couldn't be determined
+        print("Could not determine next stop for bus ${bus.busId}");
+      }
     } else {
       await showErrorNotification("Bus not found");
       stop();
     }
+  }
+
+  ProcessedRouteStop? _findNextBusStop(Bus currentBus) {
+    final processedRouteStops =
+        busProvider.processedRoutes[currentBus.route.toString()];
+    if (processedRouteStops == null || processedRouteStops.isEmpty) {
+      return null;
+    }
+    final routeInfo = busProvider.routes[currentBus.route.toString()];
+    if (routeInfo == null) return null;
+
+    final routePolyline = LineString(
+      coordinates: routeInfo.points
+          .map((p) => Position(p.longitude, p.latitude))
+          .toList(),
+    );
+
+    final busPosition = Position(currentBus.longitude, currentBus.latitude);
+    final projectedPointFeature =
+        nearestPointOnLine(routePolyline, Point(coordinates: busPosition));
+    final busProgressDistance =
+        projectedPointFeature.properties?['location'] as double;
+    for (final stop in processedRouteStops) {
+      if (stop.distanceAlongRoute > busProgressDistance) {
+        return stop;
+      }
+    }
+    if (processedRouteStops.isNotEmpty) {
+      return processedRouteStops.first;
+    }
+    return null;
   }
 
   void start() {

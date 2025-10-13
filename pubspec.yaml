@@ -43,6 +43,7 @@ dependencies:
   provider: ^6.1.1
   lottie: ^3.3.2
   get_it: ^8.2.0
+  turf: ^0.0.10
 
 dev_dependencies:
   flutter_test:
