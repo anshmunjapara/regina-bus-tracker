@@ -1,5 +1,5 @@
-import 'package:bus_tracker/models/bus_timings.dart';
 import 'package:bus_tracker/providers/bus_provider.dart';
+import 'package:bus_tracker/providers/bus_timing_provider.dart';
 import 'package:bus_tracker/utils/string_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,12 +10,10 @@ import '../providers/route_filter_provider.dart';
 
 class StopDetailsBottomSheet extends StatelessWidget {
   final Stop stop;
-  final List<BusTiming> busTimings;
 
   const StopDetailsBottomSheet({
     super.key,
     required this.stop,
-    required this.busTimings,
   });
 
   @override
@@ -38,9 +36,7 @@ class StopDetailsBottomSheet extends StatelessWidget {
           const SizedBox(height: 10),
           _buildRouteButtons(context, routes),
           const SizedBox(height: 20),
-          busTimings.isEmpty
-              ? const Expanded(child: Text('No bus timings available'))
-              : _buildBusTimings(routes),
+          _buildBusTimings(routes),
         ],
       ),
     );
@@ -59,6 +55,7 @@ class StopDetailsBottomSheet extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             context.read<RouteFilterProvider>().toggleRoute(route.toString());
+            context.read<BusTimingProvider>().loadBusTimings(context, stop);
           },
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -83,21 +80,30 @@ class StopDetailsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildBusTimings(Map<String, RouteInfo> routes) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: busTimings.length,
-        itemBuilder: (context, index) {
-          final timing = busTimings[index];
-          final color = routes[timing.route.toString()]?.color.toColor();
-          return Card(
-            child: ListTile(
-              leading: Icon(Icons.directions_bus, color: color),
-              title: Text('Bus ${timing.route} to ${timing.routeName}'),
-              subtitle: Text('Arriving at ${timing.eta}'),
-            ),
-          );
-        },
-      ),
+    return Consumer<BusTimingProvider>(
+      builder: (context, busTimingProvider, child) {
+        if (busTimingProvider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }else if (busTimingProvider.busTimings.isEmpty) {
+          return const Center(child: Text('No bus timings available.'));
+        }
+        return Expanded(
+          child: ListView.builder(
+            itemCount: busTimingProvider.busTimings.length,
+            itemBuilder: (context, index) {
+              final timing = busTimingProvider.busTimings[index];
+              final color = routes[timing.route.toString()]?.color.toColor();
+              return Card(
+                child: ListTile(
+                  leading: Icon(Icons.directions_bus, color: color),
+                  title: Text('Bus ${timing.route} to ${timing.routeName}'),
+                  subtitle: Text('Arriving at ${timing.eta}'),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

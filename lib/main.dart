@@ -1,4 +1,5 @@
 import 'package:bus_tracker/providers/bus_provider.dart';
+import 'package:bus_tracker/providers/bus_timing_provider.dart';
 import 'package:bus_tracker/providers/map_provider.dart';
 import 'package:bus_tracker/providers/route_filter_provider.dart';
 import 'package:bus_tracker/screens/map_screen.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (context) => MapProvider()),
         ChangeNotifierProvider(create: (context) => BusProvider()),
         ChangeNotifierProvider(create: (context) => RouteFilterProvider()),
+        ChangeNotifierProvider(create: (context) => BusTimingProvider()),
       ],
       child: const MyApp(),
     ),

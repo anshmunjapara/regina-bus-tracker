@@ -1,4 +1,3 @@
-import 'package:bus_tracker/models/bus_timings.dart';
 import 'package:bus_tracker/models/stop.dart';
 import 'package:bus_tracker/providers/bus_provider.dart';
 import 'package:bus_tracker/providers/map_provider.dart';
@@ -9,8 +8,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 
 import '../models/bus.dart';
-import '../providers/route_filter_provider.dart';
-import '../repositories/bus_timing_repository.dart';
+import '../providers/bus_timing_provider.dart';
 import '../services/bus_tracking_service.dart';
 import '../widgets/bus_details_bottom_sheet.dart';
 import '../widgets/map_widget.dart';
@@ -51,14 +49,13 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   Future<void> _handleStopTap(Stop stop) async {
-    final routeFilterProvider = context.read<RouteFilterProvider>();
-    final List<BusTiming> busTimings =
-        await getBusTimings(stop.stopId, routeFilterProvider.selectedRoutes);
-    print('===> ${routeFilterProvider.selectedRoutes}');
-    _showStopDetails(stop, busTimings);
+    // final routeFilterProvider = context.read<RouteFilterProvider>();
+    final busTimingProvider = context.read<BusTimingProvider>();
+    await busTimingProvider.loadBusTimings(context, stop);
+    _showStopDetails(stop);
   }
 
-  void _showStopDetails(Stop stop, List<BusTiming> busTimings) {
+  void _showStopDetails(Stop stop) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -66,7 +63,6 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
       ),
       builder: (context) => StopDetailsBottomSheet(
         stop: stop,
-        busTimings: busTimings,
       ),
     );
   }
