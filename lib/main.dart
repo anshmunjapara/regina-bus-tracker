@@ -17,10 +17,17 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => MapProvider()),
         ChangeNotifierProvider(create: (context) => BusProvider()),
         ChangeNotifierProvider(create: (context) => RouteFilterProvider()),
         ChangeNotifierProvider(create: (context) => BusTimingProvider()),
+        ChangeNotifierProxyProvider<RouteFilterProvider, MapProvider>(
+          create: (_) => MapProvider(),
+          update: (_, routeFilterProvider, mapProvider) {
+            mapProvider ??= MapProvider();
+            mapProvider.updateVisibleStops(routeFilterProvider.selectedRoutes);
+            return mapProvider;
+          },
+        ),
       ],
       child: const MyApp(),
     ),

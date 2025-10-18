@@ -17,6 +17,10 @@ class MapProvider with ChangeNotifier {
 
   List<Stop> get visibleStops => _visibleStops;
 
+  Set<String> _selectedRoutes = <String>{};
+
+  MapCamera? currentCamera;
+
   bool _isLoading = true;
 
   bool get isLoading => _isLoading;
@@ -47,21 +51,35 @@ class MapProvider with ChangeNotifier {
   void onMapPositionChanged(MapCamera camera) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      _updateVisibleStops(camera);
+      currentCamera = camera;
+      updateVisibleStops(_selectedRoutes);
     });
   }
 
-  void _updateVisibleStops(MapCamera camera) {
-    const minZoomForStops = 15.0;
+  void updateVisibleStops(selectedRoutes) {
+    _selectedRoutes = selectedRoutes;
+    if (currentCamera != null) {
+      const minZoomForStops = 15.0;
+      if (currentCamera!.zoom < minZoomForStops) {
+        _visibleStops = [];
+      } else {
+        _visibleStops = _allStops.where((stop) {
+          return currentCamera!.visibleBounds
+              .contains(LatLng(stop.latitude, stop.longitude));
+        }).toList();
 
-    if (camera.zoom < minZoomForStops) {
-      _visibleStops = [];
-    } else {
-      _visibleStops = _allStops.where((stop) {
-        return camera.visibleBounds
-            .contains(LatLng(stop.latitude, stop.longitude));
-      }).toList();
+        _updateStopsBasedOnRoutes();
+      }
     }
     notifyListeners();
+  }
+
+  void _updateStopsBasedOnRoutes() {
+    if (_selectedRoutes.isNotEmpty) {
+      _visibleStops = _visibleStops.where((stop) {
+        return _selectedRoutes.isEmpty ||
+            stop.routes.any((r) => _selectedRoutes.contains(r.toString()));
+      }).toList();
+    }
   }
 }
