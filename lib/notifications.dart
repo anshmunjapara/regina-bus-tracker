@@ -74,6 +74,7 @@ Future<void> showBusNotification(Bus bus, Stop? stop) async {
 }
 
 Future<void> showErrorNotification(String message) async {
+  await flutterLocalNotificationsPlugin.cancel(0);
   const androidDetails = AndroidNotificationDetails(
     'live_bus_activity',
     'Live Bus Activity',
