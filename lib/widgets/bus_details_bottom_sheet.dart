@@ -17,10 +17,10 @@ class BusDetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(20.0),
-      height: 300.0,
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(),
@@ -70,8 +70,8 @@ class BusDetailsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildNotificationText() {
-    return const Text('Receive arrival notifications?\n'
-        'Estimated stop time: 20 minutes.');
+    return const Text('Enable tracking to get real-time updates — you’ll receive notifications showing which stop this bus is approaching next.\n\n'
+        'Tracking will automatically end after 20 minutes.');
   }
 
   Widget _buildActionButtons() {
