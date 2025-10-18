@@ -30,7 +30,7 @@ class RouteFilterOverlay extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Filter Routes',
+                  'Select routes',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -47,6 +47,12 @@ class RouteFilterOverlay extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
+                ListTile(
+                  title: const Text('Clear Filters'),
+                  onTap: () {
+                    context.read<RouteFilterProvider>().clearFilters();
+                  },
+                ),
                 ...routes.entries.map(
                   (entry) {
                     final String routeId = entry.key;

@@ -15,4 +15,9 @@ class RouteFilterProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void clearFilters() {
+    _selectedRoutes.clear();
+    notifyListeners();
+  }
 }

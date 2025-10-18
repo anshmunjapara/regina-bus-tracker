@@ -11,8 +11,8 @@ class RouteFilterButton extends StatelessWidget {
       left: 10,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white70,
-          borderRadius: BorderRadius.circular(50.0),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
           boxShadow: const [
             BoxShadow(
               color: Colors.black45,
@@ -21,9 +21,7 @@ class RouteFilterButton extends StatelessWidget {
             ),
           ],
         ),
-        child: IconButton(
-          icon: const Icon(Icons.filter_list, size: 30),
-          color: Colors.blueAccent,
+        child: TextButton(
           onPressed: () {
             showModalBottomSheet(
               context: context,
@@ -33,7 +31,23 @@ class RouteFilterButton extends StatelessWidget {
               builder: (context) => const RouteFilterOverlay(),
             );
           },
+          child: const Text('Routes', style: TextStyle(color: Colors.black),),
         ),
+        // IconButton(
+        //   icon: const Icon(Icons.filter_list, size: 30),
+        //   tooltip: 'Filter routes',
+        //
+        //   color: Colors.blueAccent,
+        //   onPressed: () {
+        //     showModalBottomSheet(
+        //       context: context,
+        //       shape: const RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        //       ),
+        //       builder: (context) => const RouteFilterOverlay(),
+        //     );
+        //   },
+        // ),
       ),
     );
   }

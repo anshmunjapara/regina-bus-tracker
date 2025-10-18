@@ -71,11 +71,13 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> fetchBuses() async {
     _buses = await _busRepository.getAllBuses();
+    _buses.removeWhere((bus) => bus.route == 0);
     notifyListeners();
   }
 
   Future<void> fetchRoutes() async {
     _routes = await _routeRepository.getAllRoutes();
+    _routes.remove("0");
   }
 
   Future<void> processAllRoutes(List<Stop> allStops) async {
