@@ -15,6 +15,7 @@ class BusActivityManager {
   final List<Stop> allStops;
   final BusProvider busProvider;
   final BusRepository _busRepository = BusRepository();
+  ProcessedRouteStop? oldStop;
   DateTime? _startTime;
 
   BusActivityManager(
@@ -38,8 +39,12 @@ class BusActivityManager {
       // await showBusNotification(bus, stop);
 
       final nextProcessedStop = _findNextBusStop(bus);
+
       if (nextProcessedStop != null) {
-        await showBusNotification(bus, nextProcessedStop.originalStop);
+        if (oldStop != nextProcessedStop) {
+          oldStop = nextProcessedStop;
+          await showBusNotification(bus, nextProcessedStop.originalStop);
+        }
       } else {
         // Optional: handle case where next stop couldn't be determined
         print("Could not determine next stop for bus ${bus.busId}");
