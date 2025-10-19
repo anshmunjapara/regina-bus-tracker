@@ -27,6 +27,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     _trackingService.stopTracking();
+    _trackingService.isTracking.dispose();
     super.dispose();
   }
 
@@ -93,19 +94,30 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
     return Scaffold(
       appBar: _buildAppBar(),
       body: _buildBody(),
+      floatingActionButton: ValueListenableBuilder<bool>(
+        valueListenable: _trackingService.isTracking,
+        builder: (context, isTracking, child) {
+          if (isTracking) {
+            return FloatingActionButton.extended(
+              heroTag: 'stop_tracking',
+              backgroundColor: Colors.white,
+              onPressed: _stopTrackingWithMessage,
+              label: const Text(
+                'Stop Tracking',
+                style: TextStyle(color: Colors.black),
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       title: const Text("Regina Map"),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.notifications_off),
-          onPressed: _stopTrackingWithMessage,
-          tooltip: 'Stop bus tracking',
-        ),
-      ],
     );
   }
 
