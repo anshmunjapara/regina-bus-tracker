@@ -7,8 +7,20 @@ import '../models/bus.dart';
 
 Marker buildBusMarker(Bus bus, Color color, VoidCallback onTap) {
   const double markerSize = 20.0;
-  final double angle = (bus.dir - 90) * (math.pi / 180.0);
-  final bool shouldFlip = angle > math.pi / 2;
+
+  int busDir = 0;
+  if (bus.dir >= 315 || bus.dir <= 45) {
+    busDir = 0;
+  } else if (bus.dir >= 45 && bus.dir <= 135) {
+    busDir = 90;
+  } else if (bus.dir >= 135 && bus.dir <= 225) {
+    busDir = 180;
+  } else {
+    busDir = 270;
+  }
+
+  final double angle = (busDir - 90) * (math.pi / 180.0);
+  final bool shouldFlip = angle == math.pi;
   return Marker(
     height: markerSize,
     width: markerSize + 5.0,
