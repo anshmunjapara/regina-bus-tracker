@@ -1,6 +1,7 @@
 import 'package:bus_tracker/providers/bus_provider.dart';
 import 'package:bus_tracker/providers/bus_timing_provider.dart';
 import 'package:bus_tracker/utils/string_extensions.dart';
+import 'package:bus_tracker/widgets/expand_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,23 +22,28 @@ class StopDetailsBottomSheet extends StatelessWidget {
     final routes = context.read<BusProvider>().routes;
 
     return Container(
-      margin: const EdgeInsets.all(20.0),
-      height: 300.0,
+      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '${stop.stopId} : ${stop.name}',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
-          ),
+          const Center(child: ExpandBar()),
+          const SizedBox(height: 10),
+          _buildTitle(),
           const SizedBox(height: 10),
           _buildRouteButtons(context, routes),
           const SizedBox(height: 20),
-          _buildBusTimings(routes),
+          Expanded(child: _buildBusTimings(routes)),
         ],
+      ),
+    );
+  }
+
+  Text _buildTitle() {
+    return Text(
+      '${stop.stopId} : ${stop.name}',
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
       ),
     );
   }
@@ -84,24 +90,22 @@ class StopDetailsBottomSheet extends StatelessWidget {
       builder: (context, busTimingProvider, child) {
         if (busTimingProvider.isLoading) {
           return const Center(child: CircularProgressIndicator());
-        }else if (busTimingProvider.busTimings.isEmpty) {
+        } else if (busTimingProvider.busTimings.isEmpty) {
           return const Center(child: Text('No bus timings available.'));
         }
-        return Expanded(
-          child: ListView.builder(
-            itemCount: busTimingProvider.busTimings.length,
-            itemBuilder: (context, index) {
-              final timing = busTimingProvider.busTimings[index];
-              final color = routes[timing.route.toString()]?.color.toColor();
-              return Card(
-                child: ListTile(
-                  leading: Icon(Icons.directions_bus, color: color),
-                  title: Text('Bus ${timing.route} to ${timing.routeName}'),
-                  subtitle: Text('Arriving at ${timing.eta}'),
-                ),
-              );
-            },
-          ),
+        return ListView.builder(
+          itemCount: busTimingProvider.busTimings.length,
+          itemBuilder: (context, index) {
+            final timing = busTimingProvider.busTimings[index];
+            final color = routes[timing.route.toString()]?.color.toColor();
+            return Card(
+              child: ListTile(
+                leading: Icon(Icons.directions_bus, color: color),
+                title: Text('Bus ${timing.route} to ${timing.routeName}'),
+                subtitle: Text('Arriving at ${timing.eta}'),
+              ),
+            );
+          },
         );
       },
     );

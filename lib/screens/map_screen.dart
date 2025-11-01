@@ -12,6 +12,7 @@ import '../providers/bus_timing_provider.dart';
 import '../services/bus_tracking_service.dart';
 import '../widgets/bus_details_bottom_sheet.dart';
 import '../widgets/map_widget.dart';
+import '../widgets/app_bottom_sheet.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -36,12 +37,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   void _showBusDetailsBottomSheet(Bus bus) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => BusDetailsBottomSheet(
+    showAppBottomSheet(
+      context,
+      BusDetailsBottomSheet(
         bus: bus,
         onTrackBus: () => _startBusTracking(bus),
         onCancel: () => Navigator.of(context).pop(),
@@ -57,14 +55,9 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
   }
 
   void _showStopDetails(Stop stop) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => StopDetailsBottomSheet(
-        stop: stop,
-      ),
+    showAppBottomSheet(
+      context,
+      StopDetailsBottomSheet(stop: stop),
     );
   }
 

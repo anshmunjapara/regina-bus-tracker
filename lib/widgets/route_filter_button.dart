@@ -1,5 +1,6 @@
 import 'package:bus_tracker/widgets/route_filter_overlay.dart';
 import 'package:flutter/material.dart';
+import 'package:bus_tracker/widgets/app_bottom_sheet.dart';
 
 class RouteFilterButton extends StatelessWidget {
   const RouteFilterButton({super.key});
@@ -23,12 +24,9 @@ class RouteFilterButton extends StatelessWidget {
         ),
         child: TextButton(
           onPressed: () {
-            showModalBottomSheet(
-              context: context,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
-              builder: (context) => const RouteFilterOverlay(),
+            showAppBottomSheet(
+              context,
+               const RouteFilterOverlay(),
             );
           },
           child: const Text('Routes', style: TextStyle(color: Colors.black),),

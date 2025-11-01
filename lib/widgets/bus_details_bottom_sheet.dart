@@ -1,3 +1,4 @@
+import 'package:bus_tracker/widgets/expand_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,12 +19,13 @@ class BusDetailsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(),
+          const ExpandBar(),
+          _buildTitle(),
           _buildAnimation(),
           _buildNotificationText(),
           const SizedBox(height: 20),
@@ -33,7 +35,7 @@ class BusDetailsBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildTitle() {
     return Row(
       children: [
         Column(
@@ -70,7 +72,8 @@ class BusDetailsBottomSheet extends StatelessWidget {
   }
 
   Widget _buildNotificationText() {
-    return const Text('Enable tracking to get real-time updates — you’ll receive notifications showing which stop this bus is approaching next.\n\n'
+    return const Text(
+        'Enable tracking to get real-time updates — you’ll receive notifications showing which stop this bus is approaching next.\n\n'
         'Tracking will automatically end after 20 minutes.');
   }
 

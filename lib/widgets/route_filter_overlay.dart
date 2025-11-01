@@ -1,5 +1,6 @@
 import 'package:bus_tracker/providers/route_filter_provider.dart';
 import 'package:bus_tracker/utils/string_extensions.dart';
+import 'package:bus_tracker/widgets/expand_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bus_tracker/providers/bus_provider.dart';
@@ -15,15 +16,12 @@ class RouteFilterOverlay extends StatelessWidget {
     final Set<String> selectedRoutes =
         context.watch<RouteFilterProvider>().selectedRoutes;
 
-    return Container(
-      margin: const EdgeInsets.all(20.0),
-      height: 400.0,
-      decoration: const BoxDecoration(
-        color: Colors.white38,
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const ExpandBar(),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
