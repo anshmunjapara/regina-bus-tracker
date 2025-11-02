@@ -44,6 +44,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
         onTrackBus: () => _startBusTracking(bus),
         onCancel: () => Navigator.of(context).pop(),
       ),
+      isScrollControlled: false,
     );
   }
 

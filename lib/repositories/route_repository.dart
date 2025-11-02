@@ -16,8 +16,14 @@ class RouteRepository {
 
     final polylineFutures = routes.keys.map((routeNumber) async {
       try {
-        final polylineJsonString =
-            await _apiService.fetchRoutePolylinesJson(routeNumber);
+        final String polylineJsonString;
+        if (routeNumber == "9") {
+          polylineJsonString =
+              await _apiService.fetchPolylineFromMyServer(routeNumber);
+        } else {
+          polylineJsonString =
+              await _apiService.fetchRoutePolylinesJson(routeNumber);
+        }
         final points = parsePolyline(polylineJsonString);
         // Update the route object with its polyline points
         routes[routeNumber] = routes[routeNumber]!.copyWith(points: points);

@@ -5,12 +5,10 @@ import 'package:bus_tracker/models/route.dart';
 import 'package:bus_tracker/repositories/bus_repository.dart';
 import 'package:bus_tracker/repositories/route_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:turf/along.dart';
 
 import '../models/processed_route_stop.dart';
 import '../models/stop.dart';
 import '../repositories/processed_stops_repository.dart';
-import '../utils/route_processing.dart';
 
 class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
   final BusRepository _busRepository = BusRepository();
@@ -113,7 +111,7 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   void _createUpdateTimer() {
     _busUpdateTimer = Timer.periodic(
-      const Duration(seconds: 7),
+      const Duration(seconds: 6),
       (_) => fetchBuses(),
     );
     fetchBuses(); // Immediate fetch

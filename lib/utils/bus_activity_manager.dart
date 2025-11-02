@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:bus_tracker/utils/get_distance_along_polyline.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:turf/along.dart';
-import 'package:turf/nearest_point_on_line.dart';
 
 import '../models/bus.dart';
 import '../models/processed_route_stop.dart';
@@ -27,7 +25,7 @@ class BusActivityManager {
 
   Future<void> _onBusDataUpdated() async {
     if (_startTime != null &&
-        DateTime.now().difference(_startTime!).inMinutes >= 2) {
+        DateTime.now().difference(_startTime!).inMinutes >= 15) {
       stop();
       await showErrorNotification("Tracking stopped after 15 minutes");
       return;

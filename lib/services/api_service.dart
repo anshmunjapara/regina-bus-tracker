@@ -70,7 +70,19 @@ class ApiService {
   }
 
   Future<String> fetchAllProcessedStops() async {
-    final response = await _client.get(Uri.parse('https://fantomopp.pythonanywhere.com/get-data'));
+    final response = await _client
+        .get(Uri.parse('https://fantomopp.pythonanywhere.com/get-data'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception("Failed to load processed stops from API");
+    }
+  }
+
+  Future<String> fetchPolylineFromMyServer(String route) async {
+    final response = await _client.get(Uri.parse(
+        'https://fantomopp.pythonanywhere.com/get-route$route-polyline'));
 
     if (response.statusCode == 200) {
       return response.body;
