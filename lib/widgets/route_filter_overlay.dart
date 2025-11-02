@@ -17,27 +17,38 @@ class RouteFilterOverlay extends StatelessWidget {
         context.watch<RouteFilterProvider>().selectedRoutes;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      padding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const ExpandBar(),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Container(
+            color: Theme.of(context).primaryColor,
+            child: Column(
               children: [
-                const Text(
-                  'Select routes',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(
+                  height: 10,
+                ),
+                const ExpandBar(),
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Select routes',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.close),
+                      ),
+                    ],
                   ),
                 ),
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: const Icon(Icons.close),
-                ),
+                const Divider(),
               ],
             ),
           ),
@@ -62,6 +73,7 @@ class RouteFilterOverlay extends StatelessWidget {
                       },
                       selected: isSelected,
                       selectedTileColor: color.withAlpha(180),
+                      selectedColor: Theme.of(context).splashColor,
                     );
                   },
                 ),
@@ -78,8 +90,8 @@ class RouteFilterOverlay extends StatelessWidget {
               child: TextButton(
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  backgroundColor: Colors.black87,
-                  foregroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).splashColor,
+                  foregroundColor: Theme.of(context).primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

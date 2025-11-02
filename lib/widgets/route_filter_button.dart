@@ -12,7 +12,7 @@ class RouteFilterButton extends StatelessWidget {
       left: 10,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: const [
             BoxShadow(
@@ -26,10 +26,13 @@ class RouteFilterButton extends StatelessWidget {
           onPressed: () {
             showAppBottomSheet(
               context,
-               const RouteFilterOverlay(),
+              const RouteFilterOverlay(),
             );
           },
-          child: const Text('Routes', style: TextStyle(color: Colors.black),),
+          child: Text(
+            'Routes',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
         ),
         // IconButton(
         //   icon: const Icon(Icons.filter_list, size: 30),

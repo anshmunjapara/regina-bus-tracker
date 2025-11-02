@@ -93,11 +93,11 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
           if (isTracking) {
             return FloatingActionButton.extended(
               heroTag: 'stop_tracking',
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).primaryColor,
               onPressed: _stopTrackingWithMessage,
-              label: const Text(
+              label: Text(
                 'Stop Tracking',
-                style: TextStyle(color: Colors.black),
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             );
           } else {
@@ -110,7 +110,7 @@ class _MapScreenState extends State<MapScreen> with WidgetsBindingObserver {
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text("Regina Map"),
+      title: const Text("Track Your Bus"),
     );
   }
 

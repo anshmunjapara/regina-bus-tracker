@@ -10,6 +10,7 @@ Future<T?> showAppBottomSheet<T>(
       context: context,
       isScrollControlled: isScrollControlled,
       useSafeArea: useSafeArea,
+      backgroundColor: Theme.of(context).primaryColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),

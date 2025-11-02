@@ -101,7 +101,8 @@ class StopDetailsBottomSheet extends StatelessWidget {
             return Card(
               child: ListTile(
                 leading: Icon(Icons.directions_bus, color: color),
-                title: Text('Bus ${timing.route} to ${timing.routeName}'),
+                title: Text(
+                    'Bus ${timing.route} (${timing.routeName}) #${timing.busID == 0 ? 'Scheduled' : timing.busID}'),
                 subtitle: Text('Arriving at ${timing.eta}'),
               ),
             );

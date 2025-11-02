@@ -29,7 +29,7 @@ class BusDetailsBottomSheet extends StatelessWidget {
           _buildNotificationText(),
           const Spacer(),
           const SizedBox(height: 20),
-          _buildActionButtons(),
+          _buildActionButtons(context),
         ],
       ),
     );
@@ -53,7 +53,6 @@ class BusDetailsBottomSheet extends StatelessWidget {
               child: Text(
                 bus.line,
                 style: const TextStyle(
-                  color: Colors.black54,
                   height: 0.9,
                 ),
               ),
@@ -77,22 +76,22 @@ class BusDetailsBottomSheet extends StatelessWidget {
         'Tracking will automatically end after 20 minutes.');
   }
 
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
           child: TextButton(
             style: TextButton.styleFrom(
-              side: const BorderSide(
-                color: Colors.blue,
+              side: BorderSide(
+                color: Theme.of(context).splashColor,
                 width: 1.5,
               ),
             ),
             onPressed: onCancel,
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Theme.of(context).splashColor),
             ),
           ),
         ),
@@ -102,12 +101,14 @@ class BusDetailsBottomSheet extends StatelessWidget {
         Expanded(
           child: TextButton(
             style: TextButton.styleFrom(
-              backgroundColor: Colors.blue,
+              backgroundColor: Theme.of(context).splashColor,
             ),
             onPressed: onTrackBus,
-            child: const Text(
+            child: Text(
               'Track',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold),
             ),
           ),
         ),

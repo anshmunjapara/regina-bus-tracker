@@ -39,9 +39,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Bus Tracker',
-      home: MapScreen(),
+      theme: ThemeData.dark().copyWith(
+          primaryColor: Colors.grey.shade900,
+          splashColor: Colors.white,
+          textTheme:
+              const TextTheme(bodyMedium: TextStyle(color: Colors.white))),
+      home: const MapScreen(),
     );
   }
 }
