@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:bus_tracker/utils/get_distance_along_polyline.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:turf/along.dart';
 import 'package:turf/nearest_point_on_line.dart';
 
@@ -15,7 +17,7 @@ class BusActivityManager {
   final List<Stop> allStops;
   final BusProvider busProvider;
   final BusRepository _busRepository = BusRepository();
-  ProcessedRouteStop? oldStop;
+  ProcessedStop? oldStop;
   DateTime? _startTime;
 
   BusActivityManager(
@@ -34,20 +36,16 @@ class BusActivityManager {
     final bus = await _busRepository.getBusByID(selectedBus);
 
     if (bus != null) {
-      // final stop = DistanceCalculator.findClosestStop(bus, allStops);
-      //
-      // await showBusNotification(bus, stop);
-
-      final nextProcessedStop = _findNextBusStop(bus);
+      final ProcessedStop? nextProcessedStop = _findNextBusStop(bus);
 
       if (nextProcessedStop != null) {
-        if (oldStop != nextProcessedStop) {
+        if (oldStop?.id != nextProcessedStop.id) {
           oldStop = nextProcessedStop;
-          await showBusNotification(bus, nextProcessedStop.originalStop);
+          await showBusNotification(bus, nextProcessedStop.name);
         }
       } else {
-        // Optional: handle case where next stop couldn't be determined
-        print("Could not determine next stop for bus ${bus.busId}");
+        await showErrorNotification("Stop not found");
+        stop();
       }
     } else {
       await showErrorNotification("Bus not found");
@@ -55,28 +53,24 @@ class BusActivityManager {
     }
   }
 
-  ProcessedRouteStop? _findNextBusStop(Bus currentBus) {
+  ProcessedStop? _findNextBusStop(Bus currentBus) {
     final processedRouteStops =
-        busProvider.processedRoutes[currentBus.route.toString()];
+        busProvider.allProcessedStops[currentBus.route.toString()];
     if (processedRouteStops == null || processedRouteStops.isEmpty) {
       return null;
     }
+
     final routeInfo = busProvider.routes[currentBus.route.toString()];
     if (routeInfo == null) return null;
 
-    final routePolyline = LineString(
-      coordinates: routeInfo.points
-          .map((p) => Position(p.longitude, p.latitude))
-          .toList(),
-    );
+    final LatLng busPosition =
+        LatLng(currentBus.latitude, currentBus.longitude);
 
-    final busPosition = Position(currentBus.longitude, currentBus.latitude);
-    final projectedPointFeature =
-        nearestPointOnLine(routePolyline, Point(coordinates: busPosition));
-    final busProgressDistance =
-        projectedPointFeature.properties?['location'] as double;
+    final busDistanceAlongRoute = getDistanceAlongPolyline(
+        busPosition, routeInfo.points, currentBus.dir.toDouble());
+
     for (final stop in processedRouteStops) {
-      if (stop.distanceAlongRoute > busProgressDistance) {
+      if (stop.distanceAlongRoute > busDistanceAlongRoute) {
         return stop;
       }
     }

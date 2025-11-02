@@ -48,7 +48,7 @@ Future<void> _createNotificationChannels() async {
   }
 }
 
-Future<void> showBusNotification(Bus bus, Stop? stop) async {
+Future<void> showBusNotification(Bus bus, String? stopName) async {
   var androidDetails = const AndroidNotificationDetails(
     'live_bus_activity',
     'Live Bus Activity',
@@ -68,7 +68,7 @@ Future<void> showBusNotification(Bus bus, Stop? stop) async {
   await flutterLocalNotificationsPlugin.show(
     0,
     'Bus ${bus.route} - ${bus.line}',
-    stop != null ? 'Next Stop: ${stop.name}' : 'No nearby stop found',
+    stopName != null ? 'Next Stop: $stopName' : 'No nearby stop found',
     notificationDetails,
   );
 }

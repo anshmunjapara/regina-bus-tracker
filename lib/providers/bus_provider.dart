@@ -9,6 +9,7 @@ import 'package:turf/along.dart';
 
 import '../models/processed_route_stop.dart';
 import '../models/stop.dart';
+import '../repositories/processed_stops_repository.dart';
 import '../utils/route_processing.dart';
 
 class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
@@ -32,7 +33,7 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
   bool get isLoading => _isLoading;
   bool isProcessingComplete = false;
 
-  Map<String, List<ProcessedRouteStop>> processedRoutes = {};
+  Map<String, List<ProcessedStop>> allProcessedStops = {};
 
   BusProvider() {
     WidgetsBinding.instance.addObserver(this);
@@ -82,20 +83,9 @@ class BusProvider extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> processAllRoutes(List<Stop> allStops) async {
     if (isProcessingComplete) return;
+    isProcessingComplete = false;
 
-    for (var route in _routes.values) {
-      final routePolyline = LineString(
-        coordinates:
-            route.points.map((p) => Position(p.longitude, p.latitude)).toList(),
-      );
-
-      final processedStops = await preprocessRouteStops(
-        routeId: route.routeNumber,
-        allStopsInCity: allStops,
-        routePolyline: routePolyline,
-      );
-      processedRoutes[route.routeNumber] = processedStops;
-    }
+    allProcessedStops = await getAllProcessedStops();
 
     isProcessingComplete = true;
     notifyListeners();

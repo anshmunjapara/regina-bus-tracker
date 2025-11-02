@@ -68,4 +68,14 @@ class ApiService {
       throw Exception("Failed to load bus timings from API");
     }
   }
+
+  Future<String> fetchAllProcessedStops() async {
+    final response = await _client.get(Uri.parse('https://fantomopp.pythonanywhere.com/get-data'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception("Failed to load processed stops from API");
+    }
+  }
 }
