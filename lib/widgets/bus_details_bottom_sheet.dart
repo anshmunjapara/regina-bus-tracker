@@ -21,13 +21,13 @@ class BusDetailsBottomSheet extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ExpandBar(),
+          const Center(child: ExpandBar()),
           _buildTitle(),
           _buildAnimation(),
           _buildNotificationText(),
+          const Spacer(),
           const SizedBox(height: 20),
           _buildActionButtons(),
         ],
