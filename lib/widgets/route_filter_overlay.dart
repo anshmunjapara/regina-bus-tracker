@@ -45,12 +45,6 @@ class RouteFilterOverlay extends StatelessWidget {
             child: ListView(
               shrinkWrap: true,
               children: [
-                ListTile(
-                  title: const Text('Clear Filters'),
-                  onTap: () {
-                    context.read<RouteFilterProvider>().clearFilters();
-                  },
-                ),
                 ...routes.entries.map(
                   (entry) {
                     final String routeId = entry.key;
@@ -61,9 +55,6 @@ class RouteFilterOverlay extends StatelessWidget {
                     return ListTile(
                       title:
                           Text('${routeInfo.routeNumber} - ${routeInfo.name}'),
-                      // leading: isSelected
-                      //     ? const Icon(Icons.check_circle, color: Colors.blueAccent)
-                      //     : const Icon(Icons.radio_button_unchecked),
                       onTap: () {
                         context
                             .read<RouteFilterProvider>()
@@ -75,6 +66,32 @@ class RouteFilterOverlay extends StatelessWidget {
                   },
                 ),
               ],
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          SafeArea(
+            top: false,
+            child: SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  backgroundColor: Colors.black87,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+                  context.read<RouteFilterProvider>().clearFilters();
+                },
+                child: const Text(
+                  'Clear Filters',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
             ),
           ),
         ],
