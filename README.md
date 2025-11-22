@@ -11,25 +11,6 @@ A Flutter mobile application that provides real-time bus tracking for Regina Tra
 - 🎯 **Distance Calculation**: Automatic calculation of nearest bus stops using coordinate distance
 - 💾 **Data Caching**: Offline support with cached bus stop data
 
-## Project Structure
-
-```
-lib/
-├── config/          # Configuration files (API keys, constants)
-├── models/          # Data models (Bus, BusStop, Location)
-├── services/        # API services and external integrations
-├── repositories/    # Data layer abstraction
-├── providers/       # State management (Provider/Riverpod)
-├── screens/         # UI screens
-├── widgets/         # Reusable UI components
-├── utils/           # Utility functions and helpers
-└── main.dart        # App entry point
-
-assets/
-├── data/           # Static data files (bus stops, routes)
-└── images/         # App icons and images
-```
-
 ## Development Setup
 
 ### Prerequisites
