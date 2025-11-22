@@ -13,11 +13,15 @@ class RouteRepository {
     final jsonString = await _apiService.fetchRoutesJson();
     final Map<String, dynamic> jsonMap = json.decode(jsonString);
     final routes = parseRoutes(jsonMap);
+    String availablePolylineOnMyServerString =
+        await _apiService.fetchAvailablePolylineFromMyServer();
+    List availablePolylineOnMyServer =
+        jsonDecode(availablePolylineOnMyServerString);
 
     final polylineFutures = routes.keys.map((routeNumber) async {
       try {
         final String polylineJsonString;
-        if (routeNumber == "9") {
+        if (availablePolylineOnMyServer.contains(int.parse(routeNumber))) {
           polylineJsonString =
               await _apiService.fetchPolylineFromMyServer(routeNumber);
         } else {
